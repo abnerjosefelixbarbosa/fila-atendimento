@@ -36,7 +36,7 @@ public class PessoaControle {
 	
 	@PostMapping("/pessoas")
 	public ResponseEntity<Pessoa> criarPessoas(@RequestBody Pessoa pessoa) {
-		return ResponseEntity.status(200).body(pessoaServico.criarPessoa(pessoa));
+		return ResponseEntity.status(201).body(pessoaServico.criarPessoa(pessoa));
 	}
 	
 	@PutMapping("/pessoas/{id}")
