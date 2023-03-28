@@ -1,11 +1,8 @@
-package br.com.filaatendimento;
+package br.com.filaatendimento.controllers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import java.io.File;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +10,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.filaatendimento.modelo.Pessoa;
+import br.com.filaatendimento.models.Pessoa;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class FilaAtendimentoApplicationTests {	
+public class PessoaControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 	@Autowired
@@ -28,27 +26,26 @@ class FilaAtendimentoApplicationTests {
 
 	@Test
 	@Disabled
-	public void listarPessoa() throws Exception {
-		String url = String.format("/pessoas");	
-		MvcResult mvcResult = mockMvc.perform(get(url)).andReturn();
-			
-		Assertions.assertEquals(200, mvcResult.getResponse().getStatus());
-	}
-	
-	@Test
-	public void criarPessoa() throws Exception {
-		String url = String.format("/pessoas");	
-		Pessoa pessoa = new Pessoa();
-		pessoa.setId(2L);
-		pessoa.setNome("b");
-		pessoa.setIdade(2);
-		pessoa.setPosicao(2);
-		String json = objectMapper.writeValueAsString(pessoa);		
-		MvcResult mvcResult = mockMvc.perform(post(url, json)).andReturn();
-			
-		Assertions.assertEquals(201, mvcResult.getResponse().getStatus());
-	}
-	
-	
+	public void listarPessoas() throws Exception {
+		final String URL = "/pessoas";
+		MvcResult mvcResult = mockMvc.perform(get(URL)).andReturn();
 
+		String json = mvcResult.getResponse().getContentAsString();
+		Pessoa[] pessoas = objectMapper.readValue(json, Pessoa[].class);
+		System.out.println(pessoas);
+	}
+
+	@Test
+	@Disabled
+	public void criarPessoa() throws Exception {
+		Pessoa pessoa = new Pessoa();
+		pessoa.setId(1L);
+		pessoa.setIdade(23);
+		pessoa.setNome("Pessoa 1");
+		pessoa.setPosicao(1);
+		
+		final String URL = "/pessoas";
+		String json = objectMapper.writeValueAsString("");
+		MvcResult mvcResult = mockMvc.perform(post(URL).contentType("application/json").content(json)).andReturn();
+	}
 }

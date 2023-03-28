@@ -1,4 +1,4 @@
-package br.com.filaatendimento.servico;
+package br.com.filaatendimento.services;
 
 import java.util.List;
 
@@ -6,13 +6,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.filaatendimento.modelo.Pessoa;
-import br.com.filaatendimento.repositorio.PessoaRepositorio;
+import br.com.filaatendimento.models.Pessoa;
+import br.com.filaatendimento.repositories.PessoaRepository;
 
 @Service
-public class PessoaServico {
+public class PessoaService {
 	@Autowired
-	private PessoaRepositorio pessoaRepositorio;
+	private PessoaRepository pessoaRepositorio;
 	
 	public Pessoa criarPessoa(Pessoa pessoa) {
 		return pessoaRepositorio.save(pessoa);

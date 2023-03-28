@@ -1,4 +1,4 @@
-package br.com.filaatendimento.modelo;
+package br.com.filaatendimento.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -59,5 +59,10 @@ public class Pessoa {
 
 	public void setPosicao(Integer posicao) {
 		this.posicao = posicao;
+	}
+
+	@Override
+	public String toString() {
+		return "Pessoa [id=" + id + ", nome=" + nome + ", idade=" + idade + ", posicao=" + posicao + "]";
 	}
 }
