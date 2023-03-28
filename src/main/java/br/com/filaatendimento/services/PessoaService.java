@@ -2,7 +2,6 @@ package br.com.filaatendimento.services;
 
 import java.util.List;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,40 +11,48 @@ import br.com.filaatendimento.repositories.PessoaRepository;
 @Service
 public class PessoaService {
 	@Autowired
-	private PessoaRepository pessoaRepositorio;
-	
-	public Pessoa criarPessoa(Pessoa pessoa) {
-		return pessoaRepositorio.save(pessoa);
+	private PessoaRepository pessoaRepository;
+
+	public List<Pessoa> encontrarTodos() {
+		return pessoaRepository.findAll();
 	}
-	
-	public List<Pessoa> listarPessoas() {
-		return pessoaRepositorio.findAll();
+
+	public Pessoa encontrarPeloId(Long id) {
+		return pessoaRepository.findById(id).orElse(null);
 	}
-	
-	public Pessoa listarPessoaId(Long id) {
-		if (!pessoaRepositorio.existsById(id)) {
-			return null;
+
+	public void criar(Pessoa pessoa) {
+		savar(pessoa);
+	}
+
+	public String validacaoCriar(Pessoa pessoa) {
+		if (pessoa.getId() == null || encontrarPeloId(pessoa.getId()) != null) {
+			return "id invalido";
 		}
-		
-		return pessoaRepositorio.findById(id).get();
-	}
-	
-	public Pessoa alterarPessoa(Long id, Pessoa pessoa) {
-		if (!pessoaRepositorio.existsById(id)) {
-			return null;
+		if (pessoa.getNome() == null || pessoa.getNome().isEmpty() || pessoa.getNome().length() > 100) {
+			return "nome invalido";
 		}
-		
-		Pessoa pessoaProcurada = pessoaRepositorio.findById(id).get();
-		BeanUtils.copyProperties(pessoa, pessoaProcurada);
-		return pessoaRepositorio.save(pessoaProcurada);
+		if (pessoa.getIdade() == null) {
+			return "idade invalida";
+		}
+		if (pessoa.getPosicao() == null || pessoaRepository.findByPosicao(pessoa.getPosicao()).isPresent()) {
+			return "posição invalida";
+		}
+
+		return "";
 	}
-	
-	public Pessoa removerPessoa(Long id) {
-		if (!pessoaRepositorio.existsById(id)) {
-			return null;
-		} 
-		
-		pessoaRepositorio.deleteById(id);
-		return new Pessoa();
+
+	public void alterar(Pessoa pessoa) {
+		savar(pessoa);
+	}
+
+	private void savar(Pessoa pessoa) {
+		pessoaRepository.save(pessoa);
+	}
+
+	public void deletarPeloId(Long id) {
+		if (pessoaRepository.existsById(id)) {
+			pessoaRepository.deleteById(id);
+		}
 	}
 }

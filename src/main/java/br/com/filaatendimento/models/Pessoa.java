@@ -14,7 +14,7 @@ public class Pessoa {
 	private String nome;
 	@Column(nullable = false)
 	private Integer idade;
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private Integer posicao;
 	
 	public Pessoa() {
