@@ -21,10 +21,20 @@ public class PessoaService {
 		return pessoaRepository.findById(id).orElse(null);
 	}
 
-	public void criar(Pessoa pessoa) {
-		savar(pessoa);
+	public void savar(Pessoa pessoa) {
+		pessoaRepository.save(pessoa);
 	}
 
+	public void deletarPeloId(Long id) {
+		if (pessoaRepository.existsById(id)) {
+			pessoaRepository.deleteById(id);
+		}
+	}
+	
+	public void deletarTodos() {
+		pessoaRepository.deleteAllInBatch();
+	}
+	
 	public String validacaoCriar(Pessoa pessoa) {
 		if (pessoa.getId() == null || encontrarPeloId(pessoa.getId()) != null) {
 			return "id invalido";
@@ -41,18 +51,21 @@ public class PessoaService {
 
 		return "";
 	}
-
-	public void alterar(Pessoa pessoa) {
-		savar(pessoa);
-	}
-
-	private void savar(Pessoa pessoa) {
-		pessoaRepository.save(pessoa);
-	}
-
-	public void deletarPeloId(Long id) {
-		if (pessoaRepository.existsById(id)) {
-			pessoaRepository.deleteById(id);
+	
+	public String validacaoAlterar(Pessoa pessoa) {
+		if (pessoa.getId() == null || encontrarPeloId(pessoa.getId()) == null) {
+			return "id invalido";
 		}
+		if (pessoa.getNome() == null || pessoa.getNome().isEmpty() || pessoa.getNome().length() > 100) {
+			return "nome invalido";
+		}
+		if (pessoa.getIdade() == null) {
+			return "idade invalida";
+		}
+		if (pessoa.getPosicao() == null || pessoaRepository.findByPosicao(pessoa.getPosicao()).isPresent()) {
+			return "posição invalida";
+		}
+
+		return "";
 	}
 }

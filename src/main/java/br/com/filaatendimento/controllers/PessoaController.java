@@ -1,5 +1,6 @@
 package br.com.filaatendimento.controllers;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,16 +52,32 @@ public class PessoaController {
 				return ResponseEntity.status(400).body(pessoaValida);
 			}
 			
-			pessoaService.criar(pessoa);
-			return ResponseEntity.status(200).body("pessoa criada");
+			pessoaService.savar(pessoa);
+			return ResponseEntity.status(201).body("pessoa criada");
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body("erro em criar pessoa");
 		}
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> alterarPosicao(@PathVariable Long id, @RequestBody Pessoa pessoa) {
+	public ResponseEntity<?> alterar(@PathVariable Long id, @RequestBody Pessoa pessoa) {
 		try {
+			if (id != pessoa.getId()) {
+				return ResponseEntity.status(400).body("id diferente");
+			}
+			
+			String pessoaValida = pessoaService.validacaoAlterar(pessoa);
+			if (!pessoaValida.isEmpty()) {
+				return ResponseEntity.status(400).body(pessoaValida);
+			}		
+			
+			Pessoa pessoaEncontrada = pessoaService.encontrarPeloId(id);
+			if (pessoaEncontrada == null) {
+				return ResponseEntity.status(404).body("pessoa não encontrada");
+			}
+			
+			BeanUtils.copyProperties(pessoa, pessoaEncontrada);
+			pessoaService.savar(pessoaEncontrada);
 			return ResponseEntity.status(200).body("pessoa alterada");
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body("erro em alterar posição");
@@ -70,8 +87,23 @@ public class PessoaController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deletarPeloId(@PathVariable Long id) {
 		try {
+			Pessoa pessoaEncontrada = pessoaService.encontrarPeloId(id);
+			if (pessoaEncontrada == null) {
+				return ResponseEntity.status(404).body("pessoa não encontrada");
+			}
+			
 			pessoaService.deletarPeloId(id);
 			return ResponseEntity.status(200).body("pessoa deletada");
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("erro em deletar pessoa pelo id");
+		}
+	}
+	
+	@DeleteMapping
+	public ResponseEntity<?> deletarTodos() {
+		try {
+			pessoaService.deletarTodos();
+			return ResponseEntity.status(200).body("pessoas deletadas");
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body("erro em deletar pessoa pelo id");
 		}
