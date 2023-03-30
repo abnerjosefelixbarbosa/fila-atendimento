@@ -52,7 +52,7 @@ public class PessoaController {
 				return ResponseEntity.status(400).body(pessoaValida);
 			}
 			
-			pessoaService.savar(pessoa);
+			pessoaService.criar(pessoa);
 			return ResponseEntity.status(201).body("pessoa criada");
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body("erro em criar pessoa");
@@ -77,7 +77,7 @@ public class PessoaController {
 			}
 			
 			BeanUtils.copyProperties(pessoa, pessoaEncontrada);
-			pessoaService.savar(pessoaEncontrada);
+			pessoaService.alterar(pessoaEncontrada);
 			return ResponseEntity.status(200).body("pessoa alterada");
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body("erro em alterar posição");

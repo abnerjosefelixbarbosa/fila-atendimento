@@ -45,12 +45,10 @@ public class PessoaControllerTest {
 		pessoa1.setId(1L);
 		pessoa1.setNome("Pessoa 1");
 		pessoa1.setIdade(25);
-		pessoa1.setPosicao(1);
 		Pessoa pessoa2 = new Pessoa();
 		pessoa2.setId(2L);
 		pessoa2.setNome("Pessoa 2");
 		pessoa2.setIdade(30);
-		pessoa2.setPosicao(2);
 
 		mockMvc.perform(
 				post("/pessoas").contentType("application/json").content(objectMapper.writeValueAsString(pessoa1)))
