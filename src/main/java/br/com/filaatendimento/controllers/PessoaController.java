@@ -1,6 +1,5 @@
 package br.com.filaatendimento.controllers;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,9 +49,14 @@ public class PessoaController {
 			String pessoaValida = pessoaService.validacaoCriar(pessoa);
 			if (!pessoaValida.isEmpty()) {
 				return ResponseEntity.status(400).body(pessoaValida);
+			}	
+			
+			Pessoa pessoaAdicionada = pessoaService.adicionarFila(pessoa);
+			if (pessoaAdicionada == null) {
+				return ResponseEntity.status(400).body("fila esgotada");
 			}
 			
-			pessoaService.criar(pessoa);
+			pessoaService.criar(pessoaAdicionada);
 			return ResponseEntity.status(201).body("pessoa criada");
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body("erro em criar pessoa");
@@ -62,21 +66,18 @@ public class PessoaController {
 	@PutMapping("/{id}")
 	public ResponseEntity<?> alterar(@PathVariable Long id, @RequestBody Pessoa pessoa) {
 		try {
-			if (id != pessoa.getId()) {
-				return ResponseEntity.status(400).body("id diferente");
-			}
-			
 			String pessoaValida = pessoaService.validacaoAlterar(pessoa);
 			if (!pessoaValida.isEmpty()) {
 				return ResponseEntity.status(400).body(pessoaValida);
-			}		
+			}	
 			
 			Pessoa pessoaEncontrada = pessoaService.encontrarPeloId(id);
 			if (pessoaEncontrada == null) {
 				return ResponseEntity.status(404).body("pessoa não encontrada");
 			}
 			
-			BeanUtils.copyProperties(pessoa, pessoaEncontrada);
+			pessoaEncontrada.setNome(pessoa.getNome());
+			pessoaEncontrada.setIdade(pessoa.getIdade());
 			pessoaService.alterar(pessoaEncontrada);
 			return ResponseEntity.status(200).body("pessoa alterada");
 		} catch (Exception e) {

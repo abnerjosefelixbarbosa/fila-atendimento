@@ -42,11 +42,9 @@ public class PessoaControllerTest {
 	@Disabled
 	public void criar() throws Exception {
 		Pessoa pessoa1 = new Pessoa();
-		pessoa1.setId(1L);
 		pessoa1.setNome("Pessoa 1");
 		pessoa1.setIdade(25);
 		Pessoa pessoa2 = new Pessoa();
-		pessoa2.setId(2L);
 		pessoa2.setNome("Pessoa 2");
 		pessoa2.setIdade(30);
 
@@ -57,17 +55,13 @@ public class PessoaControllerTest {
 
 	@Test
 	@Disabled
-	public void alterarPosicao() throws Exception {
+	public void alterar() throws Exception {
 		Pessoa pessoa1 = new Pessoa();
-		pessoa1.setId(1L);
 		pessoa1.setNome("Pessoa 1");
 		pessoa1.setIdade(25);
-		pessoa1.setPosicao(1);
 		Pessoa pessoa2 = new Pessoa();
-		pessoa2.setId(2L);
 		pessoa2.setNome("Pessoa 2");
 		pessoa2.setIdade(30);
-		pessoa2.setPosicao(2);
 
 		mockMvc.perform(
 				put("/pessoas/1").contentType("application/json").content(objectMapper.writeValueAsString(pessoa1)))

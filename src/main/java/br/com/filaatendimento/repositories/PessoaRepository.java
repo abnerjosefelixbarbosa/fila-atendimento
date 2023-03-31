@@ -7,5 +7,6 @@ import br.com.filaatendimento.models.Pessoa;
 
 @Repository
 public interface PessoaRepository extends JpaRepository<Pessoa, Long> {
+	boolean existsByNome(String nome);
 	boolean existsByPosicao(Integer posicao);
 }

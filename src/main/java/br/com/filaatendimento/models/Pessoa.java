@@ -10,7 +10,7 @@ import javax.persistence.Table;
 public class Pessoa {
 	@Id
 	private Long id;
-	@Column(nullable = false, length = 100)
+	@Column(nullable = false, unique = true, length = 100)
 	private String nome;
 	@Column(nullable = false)
 	private Integer idade;

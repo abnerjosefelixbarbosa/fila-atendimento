@@ -22,13 +22,6 @@ public class PessoaService {
 	}
 
 	public void criar(Pessoa pessoa) {
-		for (int i = 1; i <= 1000; i++) {
-			if (!pessoaRepository.existsByPosicao(i)) {
-				pessoa.setPosicao(i);
-				break;
-			}
-		}
-
 		pessoaRepository.save(pessoa);
 	}
 
@@ -47,10 +40,8 @@ public class PessoaService {
 	}
 
 	public String validacaoCriar(Pessoa pessoa) {
-		if (pessoa.getId() == null || encontrarPeloId(pessoa.getId()) != null) {
-			return "id invalido";
-		}
-		if (pessoa.getNome() == null || pessoa.getNome().isEmpty() || pessoa.getNome().length() > 100) {
+		if (pessoa.getNome() == null || pessoa.getNome().isEmpty() || pessoa.getNome().length() > 100
+				|| pessoaRepository.existsByNome(pessoa.getNome())) {
 			return "nome invalido";
 		}
 		if (pessoa.getIdade() == null) {
@@ -60,18 +51,24 @@ public class PessoaService {
 		return "";
 	}
 
-	public String validacaoAlterar(Pessoa pessoa) {
-		if (pessoa.getId() == null || encontrarPeloId(pessoa.getId()) == null) {
-			return "id invalido";
+	public Pessoa adicionarFila(Pessoa pessoa) {
+		Integer tamanhoFila = encontrarTodos().size();
+		if (tamanhoFila >= 1000) {
+			return null;
 		}
-		if (pessoa.getNome() == null || pessoa.getNome().isEmpty() || pessoa.getNome().length() > 100) {
+
+		pessoa.setId(tamanhoFila.longValue() + 1);
+		pessoa.setPosicao(tamanhoFila + 1);
+		return pessoa;
+	}
+
+	public String validacaoAlterar(Pessoa pessoa) {
+		if (pessoa.getNome() == null || pessoa.getNome().isEmpty() || pessoa.getNome().length() > 100
+				|| pessoaRepository.existsByNome(pessoa.getNome())) {
 			return "nome invalido";
 		}
 		if (pessoa.getIdade() == null) {
 			return "idade invalida";
-		}
-		if (pessoa.getPosicao() == null || pessoaRepository.existsByPosicao(pessoa.getPosicao())) {
-			return "posição invalida";
 		}
 
 		return "";
