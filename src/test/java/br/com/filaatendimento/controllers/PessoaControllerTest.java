@@ -39,7 +39,7 @@ public class PessoaControllerTest {
 	}
 
 	@Test
-	@Disabled
+	//@Disabled
 	public void criar() throws Exception {
 		Pessoa pessoa1 = new Pessoa();
 		pessoa1.setNome("Pessoa 1");
@@ -49,7 +49,7 @@ public class PessoaControllerTest {
 		pessoa2.setIdade(30);
 
 		mockMvc.perform(
-				post("/pessoas").contentType("application/json").content(objectMapper.writeValueAsString(pessoa1)))
+				post("/pessoas").contentType("application/json").content(objectMapper.writeValueAsString(pessoa2)))
 				.andDo(print()).andExpect(status().is(201));
 	}
 
@@ -66,6 +66,12 @@ public class PessoaControllerTest {
 		mockMvc.perform(
 				put("/pessoas/1").contentType("application/json").content(objectMapper.writeValueAsString(pessoa1)))
 				.andDo(print()).andExpect(status().is(200));
+	}
+
+	@Test
+	@Disabled
+	public void mudarPosicao() throws Exception {
+		mockMvc.perform(put("/pessoas/alterar_fila/2")).andDo(print()).andExpect(status().is(200));
 	}
 
 	@Test

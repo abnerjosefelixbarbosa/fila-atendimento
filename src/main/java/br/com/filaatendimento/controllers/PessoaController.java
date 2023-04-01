@@ -51,12 +51,12 @@ public class PessoaController {
 				return ResponseEntity.status(400).body(pessoaValida);
 			}	
 			
-			Pessoa pessoaAdicionada = pessoaService.adicionarFila(pessoa);
-			if (pessoaAdicionada == null) {
-				return ResponseEntity.status(400).body("fila esgotada");
+			pessoaValida = pessoaService.validacaoAdicionarFila(pessoa);
+			if (!pessoaValida.isEmpty()) {
+				return ResponseEntity.status(400).body(pessoaValida);
 			}
 			
-			pessoaService.criar(pessoaAdicionada);
+		    pessoaService.adicionarFila(pessoa);
 			return ResponseEntity.status(201).body("pessoa criada");
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body("erro em criar pessoa");
@@ -80,6 +80,26 @@ public class PessoaController {
 			pessoaEncontrada.setIdade(pessoa.getIdade());
 			pessoaService.alterar(pessoaEncontrada);
 			return ResponseEntity.status(200).body("pessoa alterada");
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("erro em alterar posição");
+		}
+	}
+	
+	@PutMapping("/alterar_fila/{id}")
+	public ResponseEntity<?> alterarFila(@PathVariable Long id) {
+		try {
+			Pessoa pessoaEncontrada = pessoaService.encontrarPeloId(id);
+			if (pessoaEncontrada == null) {
+				return ResponseEntity.status(404).body("pessoa não encontrada");
+			}	
+			
+			String pessoaValida = pessoaService.validacaoAlterarFila(pessoaEncontrada);
+			if (!pessoaValida.isEmpty()) {
+				return ResponseEntity.status(400).body(pessoaValida);
+			}
+			
+			pessoaService.alterarFila();
+			return ResponseEntity.status(200).body("posição mudada");
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body("erro em alterar posição");
 		}
