@@ -27,20 +27,20 @@ public class PessoaControllerTest {
 	private ObjectMapper objectMapper;
 
 	@Test
-	@Disabled
-	public void encontrarTodos() throws Exception {
+	//@Disabled
+	public void encontrarTodasPessoas() throws Exception {
 		mockMvc.perform(get("/pessoas")).andDo(print()).andExpect(status().is(200));
 	}
 
 	@Test
 	@Disabled
-	public void encontrarPeloId() throws Exception {
-		mockMvc.perform(get("/pessoas/1")).andDo(print()).andExpect(status().is(200));
+	public void encontrarPessoaPeloId() throws Exception {
+		mockMvc.perform(get("/pessoas/2")).andDo(print()).andExpect(status().is(200));
 	}
 
 	@Test
-	//@Disabled
-	public void criar() throws Exception {
+	@Disabled
+	public void criarPessoa() throws Exception {
 		Pessoa pessoa1 = new Pessoa();
 		pessoa1.setNome("Pessoa 1");
 		pessoa1.setIdade(25);
@@ -55,7 +55,7 @@ public class PessoaControllerTest {
 
 	@Test
 	@Disabled
-	public void alterar() throws Exception {
+	public void alterarPessoa() throws Exception {
 		Pessoa pessoa1 = new Pessoa();
 		pessoa1.setNome("Pessoa 1");
 		pessoa1.setIdade(25);
@@ -70,19 +70,19 @@ public class PessoaControllerTest {
 
 	@Test
 	@Disabled
-	public void mudarPosicao() throws Exception {
+	public void alterarFila() throws Exception {
 		mockMvc.perform(put("/pessoas/alterar_fila/2")).andDo(print()).andExpect(status().is(200));
 	}
 
 	@Test
 	@Disabled
-	public void deletarPeloId() throws Exception {
+	public void deletarPessoaPeloId() throws Exception {
 		mockMvc.perform(delete("/pessoas/1")).andDo(print()).andExpect(status().is(200));
 	}
 
 	@Test
 	@Disabled
-	public void deletarTodas() throws Exception {
+	public void deletarTodasPessoas() throws Exception {
 		mockMvc.perform(delete("/pessoas")).andDo(print()).andExpect(status().is(200));
 	}
 }

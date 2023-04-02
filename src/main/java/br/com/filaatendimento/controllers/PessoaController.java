@@ -19,114 +19,91 @@ import br.com.filaatendimento.services.PessoaService;
 public class PessoaController {
 	@Autowired
 	private PessoaService pessoaService;
-	
+
 	@GetMapping
-	public ResponseEntity<?> encontrarTodos() {
+	public ResponseEntity<?> encontrarTodasPessoas() {
 		try {
-			return ResponseEntity.status(200).body(pessoaService.encontrarTodos());
+			return ResponseEntity.status(200).body(pessoaService.encontrarTodasPessoas());
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body("erro em encontrar todas as pessoas");
+			return ResponseEntity.status(500).body("erro no servidor");
 		}
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<?> encontrarPeloId(@PathVariable Long id) {
+	public ResponseEntity<?> encontrarPessoaPeloId(@PathVariable Long id) {
 		try {
-			Pessoa pessoaEncontrada = pessoaService.encontrarPeloId(id);
-			if (pessoaEncontrada == null) {
-				return ResponseEntity.status(404).body("pessoa não encontrada");
-			}
-			
+			Pessoa pessoaEncontrada = pessoaService.encontrarPessoaPeloId(id);
 			return ResponseEntity.status(200).body(pessoaEncontrada);
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body("erro em encontrar pessoa pelo id");
-		}	
+			if (e.getMessage().equals("pessoa não encontrada"))
+				return ResponseEntity.status(404).body(e.getMessage());
+
+			return ResponseEntity.status(500).body("erro no servidor");
+		}
 	}
-	
+
 	@PostMapping
-	public ResponseEntity<?> criar(@RequestBody Pessoa pessoa) {
+	public ResponseEntity<?> criarPessoa(@RequestBody Pessoa pessoa) {
 		try {
-			String pessoaValida = pessoaService.validacaoCriar(pessoa);
-			if (!pessoaValida.isEmpty()) {
-				return ResponseEntity.status(400).body(pessoaValida);
-			}	
-			
-			pessoaValida = pessoaService.validacaoAdicionarFila(pessoa);
-			if (!pessoaValida.isEmpty()) {
-				return ResponseEntity.status(400).body(pessoaValida);
-			}
-			
-		    pessoaService.adicionarFila(pessoa);
-			return ResponseEntity.status(201).body("pessoa criada");
+			return ResponseEntity.status(201).body(pessoaService.criarPessoa(pessoa));
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body("erro em criar pessoa");
+			if (!e.getMessage().equals("pessoa verificada"))
+				return ResponseEntity.status(400).body(e.getMessage());
+			if (!e.getMessage().equals("fila verificada"))
+				return ResponseEntity.status(400).body(e.getMessage());
+
+			return ResponseEntity.status(500).body("erro no servidor");
 		}
 	}
-	
+
 	@PutMapping("/{id}")
-	public ResponseEntity<?> alterar(@PathVariable Long id, @RequestBody Pessoa pessoa) {
+	public ResponseEntity<?> alterarPessoa(@PathVariable Long id, @RequestBody Pessoa pessoa) {
 		try {
-			String pessoaValida = pessoaService.validacaoAlterar(pessoa);
-			if (!pessoaValida.isEmpty()) {
-				return ResponseEntity.status(400).body(pessoaValida);
-			}	
-			
-			Pessoa pessoaEncontrada = pessoaService.encontrarPeloId(id);
-			if (pessoaEncontrada == null) {
-				return ResponseEntity.status(404).body("pessoa não encontrada");
-			}
-			
-			pessoaEncontrada.setNome(pessoa.getNome());
-			pessoaEncontrada.setIdade(pessoa.getIdade());
-			pessoaService.alterar(pessoaEncontrada);
-			return ResponseEntity.status(200).body("pessoa alterada");
+			return ResponseEntity.status(200).body(pessoaService.alterarPessoa(id, pessoa));
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body("erro em alterar posição");
+			if (!e.getMessage().equals("pessoa verificada"))
+				return ResponseEntity.status(400).body(e.getMessage());
+			if (e.getMessage().equals("pessoa não encontrada"))
+				return ResponseEntity.status(404).body(e.getMessage());
+
+			return ResponseEntity.status(500).body("erro no servidor");
 		}
 	}
-	
+
 	@PutMapping("/alterar_fila/{id}")
 	public ResponseEntity<?> alterarFila(@PathVariable Long id) {
 		try {
-			Pessoa pessoaEncontrada = pessoaService.encontrarPeloId(id);
-			if (pessoaEncontrada == null) {
-				return ResponseEntity.status(404).body("pessoa não encontrada");
-			}	
-			
-			String pessoaValida = pessoaService.validacaoAlterarFila(pessoaEncontrada);
-			if (!pessoaValida.isEmpty()) {
-				return ResponseEntity.status(400).body(pessoaValida);
-			}
-			
-			pessoaService.alterarFila();
-			return ResponseEntity.status(200).body("posição mudada");
+			return ResponseEntity.status(200).body(pessoaService.alterarFila(id));
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body("erro em alterar posição");
+			if (e.getMessage().equals("pessoa não encontrada"))
+				return ResponseEntity.status(404).body(e.getMessage());
+			if (!e.getMessage().equals("fila verificada"))
+				return ResponseEntity.status(400).body(e.getMessage());
+
+			return ResponseEntity.status(500).body("erro no servidor");
 		}
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deletarPeloId(@PathVariable Long id) {
 		try {
-			Pessoa pessoaEncontrada = pessoaService.encontrarPeloId(id);
-			if (pessoaEncontrada == null) {
-				return ResponseEntity.status(404).body("pessoa não encontrada");
-			}
-			
 			pessoaService.deletarPeloId(id);
 			return ResponseEntity.status(200).body("pessoa deletada");
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body("erro em deletar pessoa pelo id");
+			if (e.getMessage().equals("pessoa não encontrada"))
+				return ResponseEntity.status(404).body(e.getMessage());
+
+			return ResponseEntity.status(500).body("erro no servidor");
 		}
 	}
-	
+
 	@DeleteMapping
-	public ResponseEntity<?> deletarTodos() {
+	public ResponseEntity<?> deletarTodasPessoas() {
 		try {
-			pessoaService.deletarTodos();
+			pessoaService.deletarTodasPessoas();
 			return ResponseEntity.status(200).body("pessoas deletadas");
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body("erro em deletar pessoa pelo id");
+			return ResponseEntity.status(500).body("erro no servidor");
 		}
 	}
 }
